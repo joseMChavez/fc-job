@@ -1,1 +1,2 @@
-worker: fc-job
+worker: go run ./src/cmd/worker
+

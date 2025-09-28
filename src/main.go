@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 	"os"
 
@@ -10,6 +11,7 @@ import (
 	"github.com/joseMChavez/fc-job/src/internal/adapters/infra/smtp_outlook"
 	"github.com/joseMChavez/fc-job/src/internal/application"
 	_ "github.com/lib/pq"
+	"github.com/robfig/cron/v3"
 )
 
 func main() {
@@ -32,8 +34,21 @@ func main() {
 		EmailSender: sender,
 		PdfGen:      pdf,
 	}
+	cc := cron.New(cron.WithSeconds())
 
-	if err := uc.SendInvoice(); err != nil {
+	_, err = cc.AddFunc("0 0 9 * * *", func() {
+
+		if err := uc.SendInvoice(); err != nil {
+			log.Fatal(err)
+			log.Println("Error enviando facturas:", err)
+		}
+
+	})
+	if err != nil {
 		log.Fatal(err)
 	}
+	cc.Start()
+
+	fmt.Println("Cron iniciado. Presiona Ctrl+C para salir.")
+	select {} // ejecucion indefinida
 }

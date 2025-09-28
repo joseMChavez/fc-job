@@ -16,7 +16,7 @@ func NewInvoiceRepo(db *sql.DB) *InvoiceRepo {
 }
 
 func (r *InvoiceRepo) FindPending() ([]*domain.Invoice, error) {
-	rows, err := r.db.Query("SELECT * FROM invoices WHERE sent = false")
+	rows, err := r.db.Query("SELECT id, customer_email, customer_name, customer_address, customer_id, total_amount, subtotal, tax_amount, created_at, updated_at, due_date, month, year, sent FROM public.invoices WHERE sent = false and date(due_date) = date(NOW()) ")
 	if err != nil {
 		return nil, err
 	}
@@ -29,6 +29,10 @@ func (r *InvoiceRepo) FindPending() ([]*domain.Invoice, error) {
 			&inv.Month, &inv.Year, &inv.Subtotal, &inv.TotalAmount, &inv.TaxAmount, &inv.Sent, &inv.DueDate); err != nil {
 			return nil, err
 		}
+		inv.Items, err = r.GetDetails(inv.ID)
+		if err != nil {
+			return nil, err
+		}
 		res = append(res, inv)
 	}
 	return res, nil
@@ -39,7 +43,7 @@ func (r *InvoiceRepo) MarkAsSent(id int64) error {
 	return err
 }
 func (r *InvoiceRepo) GetDetails(id int64) ([]*domain.InvoiceItem, error) {
-	rows, err := r.db.Query("SELECT id, invoice_id, description, quantity, unit_price, total_price FROM invoice_items WHERE invoice_id = $1", id)
+	rows, err := r.db.Query("SELECT id, invoice_id, description, quantity, unit_price, total_price FROM public.invoice_items WHERE invoice_id = $1", id)
 	if err != nil {
 		return nil, err
 	}
@@ -56,7 +60,7 @@ func (r *InvoiceRepo) GetDetails(id int64) ([]*domain.InvoiceItem, error) {
 }
 func (r *InvoiceRepo) GetByID(id int64) (*domain.Invoice, error) {
 	var inv domain.Invoice
-	err := r.db.QueryRow("SELECT * FROM invoices WHERE id = $1", id).
+	err := r.db.QueryRow("SELECT id, customer_email, customer_name, customer_address, customer_id, total_amount, subtotal, tax_amount, created_at, updated_at, due_date, month, year, sent FROM public.invoices WHERE id = $1", id).
 		Scan(&inv.ID, &inv.CustomerEmail, &inv.CustomerName, &inv.CustomerAddress, &inv.CustomerId, &inv.CreatedAt, &inv.DueDate,
 			&inv.Month, &inv.Year, &inv.Subtotal, &inv.TotalAmount, &inv.TaxAmount, &inv.Sent)
 	if err != nil {

@@ -6,3 +6,5 @@ require (
 	github.com/jung-kurt/gofpdf v1.16.2
 	github.com/lib/pq v1.10.9
 )
+
+require github.com/robfig/cron/v3 v3.0.1

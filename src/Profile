@@ -1,2 +1,2 @@
-worker: go run ./src/cmd/worker
+worker: go run .
 

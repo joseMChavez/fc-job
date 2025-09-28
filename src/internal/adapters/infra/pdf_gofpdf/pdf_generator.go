@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/joseMChavez/fc-job/internal/domain"
-	"github.com/joseMChavez/fc-job/internal/ports"
+	"github.com/joseMChavez/fc-job/src/internal/domain"
+	"github.com/joseMChavez/fc-job/src/internal/ports"
 	"github.com/jung-kurt/gofpdf"
 )
 

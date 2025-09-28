@@ -1,6 +1,6 @@
 package ports
 
-import "github.com/joseMChavez/fc-job/internal/domain"
+import "github.com/joseMChavez/fc-job/src/internal/domain"
 
 type InvoiceRepository interface {
 	GetByID(id int64) (*domain.Invoice, error)

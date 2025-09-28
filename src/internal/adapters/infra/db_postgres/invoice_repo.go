@@ -3,7 +3,7 @@ package db_postgres
 import (
 	"database/sql"
 
-	"github.com/joseMChavez/fc-job/internal/domain"
+	"github.com/joseMChavez/fc-job/src/internal/domain"
 	_ "github.com/lib/pq"
 )
 

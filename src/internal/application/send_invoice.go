@@ -3,7 +3,7 @@ package application
 import (
 	"fmt"
 
-	"github.com/joseMChavez/fc-job/internal/ports"
+	"github.com/joseMChavez/fc-job/src/internal/ports"
 )
 
 type InvoiceSender struct {

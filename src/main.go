@@ -5,10 +5,10 @@ import (
 	"log"
 	"os"
 
-	"github.com/joseMChavez/fc-job/internal/adapters/infra/db_postgres"
-	"github.com/joseMChavez/fc-job/internal/adapters/infra/pdf_gofpdf"
-	"github.com/joseMChavez/fc-job/internal/adapters/infra/smtp_outlook"
-	"github.com/joseMChavez/fc-job/internal/application"
+	"github.com/joseMChavez/fc-job/src/internal/adapters/infra/db_postgres"
+	"github.com/joseMChavez/fc-job/src/internal/adapters/infra/pdf_gofpdf"
+	"github.com/joseMChavez/fc-job/src/internal/adapters/infra/smtp_outlook"
+	"github.com/joseMChavez/fc-job/src/internal/application"
 	_ "github.com/lib/pq"
 )
 

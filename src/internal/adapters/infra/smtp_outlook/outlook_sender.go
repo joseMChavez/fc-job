@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/smtp"
 
-	"github.com/joseMChavez/fc-job/internal/ports"
+	"github.com/joseMChavez/fc-job/src/internal/ports"
 )
 
 // OutlookSender envía correo usando smtp.office365.com (STARTTLS)

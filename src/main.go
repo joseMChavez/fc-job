@@ -36,7 +36,7 @@ func main() {
 	}
 	cc := cron.New(cron.WithSeconds())
 
-	_, err = cc.AddFunc("0 0 9 * * *", func() {
+	_, err = cc.AddFunc("0 */2 * * * *", func() {
 
 		if err := uc.SendInvoice(); err != nil {
 			log.Fatal(err)

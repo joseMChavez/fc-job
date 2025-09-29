@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"log"
 	"os"
-
+|	"time"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joseMChavez/fc-job/src/internal/adapters/infra/db_postgres"
 	"github.com/joseMChavez/fc-job/src/internal/adapters/infra/pdf_gofpdf"
@@ -57,7 +57,14 @@ func main() {
 	cc := cron.New(cron.WithSeconds())
 
 	_, err = cc.AddFunc("0 */2 * * * *", func() {
+ message := fmt.Sprintf("Cron ejecutado a las %s", time.Now().Format(time.RFC3339))
+        fmt.Println(message)
 
+        _, err := pool.Exec(context.Background(),
+            "INSERT INTO cron_logs(message) VALUES($1)", message)
+        if err != nil {
+            log.Printf("Error al guardar en DB: %v", err)
+        }
 		if err := uc.SendInvoice(); err != nil {
 			log.Fatal(err)
 			log.Println("Error enviando facturas:", err)

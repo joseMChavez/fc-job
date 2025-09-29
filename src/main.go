@@ -1,11 +1,13 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"log"
 	"os"
 
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joseMChavez/fc-job/src/internal/adapters/infra/db_postgres"
 	"github.com/joseMChavez/fc-job/src/internal/adapters/infra/pdf_gofpdf"
 	"github.com/joseMChavez/fc-job/src/internal/adapters/infra/smtp_outlook"
@@ -23,6 +25,24 @@ func main() {
 	defer db.Close()
 
 	repo := db_postgres.NewInvoiceRepo(db)
+
+	pool, err := pgxpool.New(context.Background(), dsn)
+	if err != nil {
+		log.Fatalf("Error al conectar a DB: %v", err)
+	}
+	defer pool.Close()
+
+	// Crear tabla si no existe
+	_, err = pool.Exec(context.Background(), `
+        CREATE TABLE IF NOT EXISTS cron_logs (
+            id SERIAL PRIMARY KEY,
+            message TEXT,
+            created_at TIMESTAMP DEFAULT NOW()
+        )
+    `)
+	if err != nil {
+		log.Fatalf("Error al crear tabla: %v", err)
+	}
 	sender := smtp_outlook.NewOutlookSender(
 		os.Getenv("SMTP_HOST"), os.Getenv("SMTP_PORT"),
 		os.Getenv("SMTP_USER"), os.Getenv("SMTP_PASS"),

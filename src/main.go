@@ -9,10 +9,7 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/joseMChavez/fc-job/src/internal/adapters/infra/db_postgres"
-	"github.com/joseMChavez/fc-job/src/internal/adapters/infra/pdf_gofpdf"
-	"github.com/joseMChavez/fc-job/src/internal/adapters/infra/smtp_outlook"
-	"github.com/joseMChavez/fc-job/src/internal/application"
+
 	_ "github.com/lib/pq"
 	"github.com/robfig/cron/v3"
 )
@@ -25,7 +22,7 @@ func main() {
 	}
 	defer db.Close()
 
-	repo := db_postgres.NewInvoiceRepo(db)
+	//repo := db_postgres.NewInvoiceRepo(db) 	"github.com/joseMChavez/fc-job/src/internal/adapters/infra/db_postgres"
 
 	pool, err := pgxpool.New(context.Background(), dsn)
 	if err != nil {
@@ -44,17 +41,17 @@ func main() {
 	if err != nil {
 		log.Fatalf("Error al crear tabla: %v", err)
 	}
-	sender := smtp_outlook.NewOutlookSender(
-		os.Getenv("SMTP_HOST"), os.Getenv("SMTP_PORT"),
-		os.Getenv("SMTP_USER"), os.Getenv("SMTP_PASS"),
-	)
-	pdf := pdf_gofpdf.NewPDFGenerator()
+	//sender := smtp_outlook.NewOutlookSender(
+	//	os.Getenv("SMTP_HOST"), os.Getenv("SMTP_PORT"),
+	//	os.Getenv("SMTP_USER"), os.Getenv("SMTP_PASS"),
+	//)
+	/*pdf := pdf_gofpdf.NewPDFGenerator()
 
 	uc := application.InvoiceSender{
 		Repo:        repo,
 		EmailSender: sender,
 		PdfGen:      pdf,
-	}
+	}*/
 	cc := cron.New(cron.WithSeconds())
 
 	_, err = cc.AddFunc("0 */2 * * * *", func() {
@@ -66,10 +63,10 @@ func main() {
 		if err != nil {
 			log.Printf("Error al guardar en DB: %v", err)
 		}
-		if err := uc.SendInvoice(); err != nil {
+		/*if err := uc.SendInvoice(); err != nil {
 			log.Fatal(err)
 			log.Println("Error enviando facturas:", err)
-		}
+		}*/
 
 	})
 	if err != nil {
